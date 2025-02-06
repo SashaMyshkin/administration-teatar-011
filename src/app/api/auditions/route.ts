@@ -44,7 +44,12 @@ export async function GET(request: NextRequest) {
         membershipFee, 
         uniqueKey, 
         isOpen, 
-        finished 
+        finished,
+        case
+          when isOpen = 1 then 'in-progress'
+          when isOpen = 0 and finished is null then 'draft'
+          when finished = 1 then 'finished'
+        end as auditionStatus
     FROM audition a
     INNER JOIN auditionPresentationType apt on apt.id = a.presentationTypeId
     INNER JOIN auditionType at on at.id = a.auditionTypeId
@@ -83,6 +88,7 @@ export async function GET(request: NextRequest) {
         rows,
       },
     };
+
     return NextResponse.json(response);
   } catch (error) {
 
