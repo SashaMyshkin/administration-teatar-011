@@ -21,13 +21,15 @@ export default function LoginPage(): React.JSX.Element {
   };
 
   return (
-    <Container
+    <Box
       component="main"
       sx={{
         display: "flex",
         justifyContent: "center",
         height: "100vh",
+				width:"100vw",
         alignItems: "center",
+				bgcolor:"background.default",
       }}
     >
       <Box component="form" sx={formStyles}>
@@ -48,7 +50,7 @@ export default function LoginPage(): React.JSX.Element {
         />
         <Button variant="contained">Uloguj se</Button>
       </Box>
-    </Container>
+    </Box>
   );
 }
 
@@ -61,4 +63,5 @@ const formStyles: SxProps = {
   padding: "1.5rem",
   width: "22rem",
 	boxShadow:3,
+	bgcolor:"background.paper",
 };
