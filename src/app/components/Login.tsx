@@ -10,14 +10,28 @@ import {
   SxProps,
 } from "@mui/material";
 
-export default function LoginPage(): React.JSX.Element {
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+export default  function LoginPage(): React.JSX.Element {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email") as string,
-      password: data.get("password") as string,
-    });
+    
+    try {
+      const options:RequestInit = {
+        method:"POST",
+        body: new FormData(event.currentTarget)
+      }
+     
+      const url = new URL(process.env.NEXT_PUBLIC_API ?? "");
+      url.pathname += 'auth/';
+
+      const response = await fetch(url, options);
+      const result = await response.json();
+  
+    } catch (err) {
+      console.log(err)
+    }
+    
+
+    
   };
 
   return (
@@ -32,23 +46,27 @@ export default function LoginPage(): React.JSX.Element {
 				bgcolor:"background.default",
       }}
     >
-      <Box component="form" sx={formStyles}>
+      <Box component="form" sx={formStyles} onSubmit={handleSubmit} method="POST"> 
         <Typography component="h1" variant="h6" textAlign="center">
           Administracija
         </Typography>
         <TextField
-          id="standard-basic"
+          id="username"
+          name="username"
+          type="text"
           label="Korisničko ime"
           variant="standard"
           size="small"
         />
         <TextField
-          id="standard-basic"
+          id="password"
+          name="password"
+          type="password"
           label="Lozinka"
           variant="standard"
           size="small"
         />
-        <Button variant="contained">Uloguj se</Button>
+        <Button variant="contained" type="submit">Uloguj se</Button>
       </Box>
     </Box>
   );
