@@ -35,7 +35,6 @@ export default function LoginPage(): React.JSX.Element {
     if (res?.error) {
       showAlert(res.error, "error"); // Display error message
     } else {
-      showAlert("Uspešno ste se prijavili!", "success");
       router.push("/"); // ✅ Redirect using router.push
       router.refresh(); // ✅ Refresh the page to ensure user state updates
     }
