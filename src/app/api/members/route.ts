@@ -35,7 +35,8 @@ export async function GET(request: Request) {
   const resultSet = await db
     .select()
     .from(members)
-    .where(conditions) // Apply filters
+    .where(conditions)
+    .orderBy(members.dateOfJoining)
     .limit(limit)
     .offset(offset);
 

@@ -11,6 +11,7 @@ import {
   Box,
 } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { format } from "date-fns";
 import { useEffect, useState } from "react";
 
 const DEFAULT_PAGE = 0;
@@ -28,7 +29,7 @@ export default function Members() {
     name: "",
     surname: "",
     membershipStatus: "",
-    active: "",
+    active: "1",
   });
 
   useEffect(() => {
@@ -120,6 +121,7 @@ export default function Members() {
               id="active-select"
               variant="outlined"
               value={filters.active}
+              label="Aktivan"
               onChange={(e) =>
                 setFilters({ ...filters, active: e.target.value })
               }
@@ -165,6 +167,36 @@ function getColumns(): GridColDef[] {
       flex: 1,
       filterable: false,
       sortable: false,
+    },
+    {
+      field: "email",
+      headerName: "Imejl",
+      type: "string",
+      flex: 1,
+      filterable: false,
+      sortable: false,
+    },
+    {
+      field: "dateOfBirth",
+      headerName: "Datum rođenja",
+      type: "string",
+      flex: 1,
+      filterable: false,
+      sortable: false,
+      valueFormatter: (value) => {
+        return (value != null) ? format(new Date(value), "dd. MM. yyyy.") : "";
+      },
+    },
+    {
+      field: "dateOfJoining",
+      headerName: "Datum upisa",
+      type: "string",
+      flex: 1,
+      filterable: false,
+      sortable: false,
+      valueFormatter: (value) => {
+        return (value != null) ? format(new Date(value), "dd. MM. yyyy."):"";
+      },
     },
     {
       field: "membershipStatus",
