@@ -99,8 +99,6 @@ export default function Menu({
     const resp = await signOut({
       redirectTo:"/",
     });
-
-    console.log(resp);
   }
 
   return (
