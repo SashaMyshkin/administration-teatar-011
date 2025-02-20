@@ -1,12 +1,15 @@
 import db from "@/db";
 import users from "@/db/schemas/users";
 import CustomUser from "@/types/CustomUser";
-import { eq } from "drizzle-orm";
+import { createHash } from "crypto";
+import { and, eq } from "drizzle-orm";
 
 export const getUserFromDB = async (
   username: string,
   password: string
 ): Promise<CustomUser | null> => {
+
+  const hashedPassword = createHash('sha256').update(password).digest('hex');
 
   const result = await db
     .select({
@@ -16,7 +19,7 @@ export const getUserFromDB = async (
       surname: users.surname,
     })
     .from(users)
-    .where(eq(users.username, username));
+    .where(and(eq(users.username, username), eq(users.password, hashedPassword)) );
 
   if (result.length === 0) return null;
 
