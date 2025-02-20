@@ -16,6 +16,7 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 import React from "react";
+import { signOut } from "next-auth/react";
 
 const drawerWidth = 240;
 
@@ -94,6 +95,14 @@ export default function Menu({
     setOpen(false);
   };
 
+  async function handleSigningOut(){
+    const resp = await signOut({
+      redirectTo:"/",
+    });
+
+    console.log(resp);
+  }
+
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
@@ -153,6 +162,11 @@ export default function Menu({
               );
             }
           })}
+          <Divider></Divider>
+          <ListItemButton component="button" onClick={handleSigningOut} sx={{width:"100%", textAlign:"center"}}>
+            <ListItemText primary="Odjavi se" />
+          </ListItemButton>
+
         </List>
       </Drawer>
       <Main open={open}>

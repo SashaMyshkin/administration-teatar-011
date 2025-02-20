@@ -63,6 +63,7 @@ export default function LoginPage(): React.JSX.Element {
           label="Korisničko ime"
           variant="standard"
           size="small"
+          autoComplete="false"
         />
         <TextField
           id="password"
@@ -71,6 +72,7 @@ export default function LoginPage(): React.JSX.Element {
           label="Lozinka"
           variant="standard"
           size="small"
+          autoComplete="false"
         />
         <Button variant="contained" type="submit">
           Uloguj se
