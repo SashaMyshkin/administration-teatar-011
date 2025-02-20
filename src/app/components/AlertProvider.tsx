@@ -39,7 +39,7 @@ export function AlertProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <AlertContext.Provider value={{ showAlert, closeAlert }}>
-      <Box sx={{ width: "100%", position: "fixed", top: 20, zIndex: 1000 }}>
+      <Box sx={{ width: "fit-content", position: "fixed", top: 20, right:20, zIndex: 1000 }}>
         <Collapse in={alert.open}>
           <Alert
             severity={alert.type}
