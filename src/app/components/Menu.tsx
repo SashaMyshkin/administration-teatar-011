@@ -17,6 +17,7 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 import React from "react";
 import { signOut } from "next-auth/react";
+import Link from "next/link";
 
 const drawerWidth = 240;
 
@@ -154,8 +155,8 @@ export default function Menu({
               return <Divider key={index}></Divider>;
             } else {
               return (
-                <ListItemButton component="a" href={href} key={index}>
-                  <ListItemText primary={text} />
+                <ListItemButton component="button"  key={index} style={{width:"100%"}}>
+                  <Link href={href} style={{display:"inline-block", width:"100%"}}><ListItemText primary={text} /></Link>
                 </ListItemButton>
               );
             }
