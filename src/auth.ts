@@ -31,7 +31,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }),
   ],
   session: {
-    maxAge: 10, // 30 days
-    updateAge: 0 // 1 day
+    maxAge: 15*60, // 15 minutes
+    updateAge: 5*60 // 5 minutes
   },
 });
