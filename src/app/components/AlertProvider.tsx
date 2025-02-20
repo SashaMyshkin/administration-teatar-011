@@ -13,11 +13,10 @@ interface AlertState {
   open: boolean;
   message: string;
   type: AlertType;
-  timeout: number;
 }
 
 interface AlertContextProps {
-  showAlert: (message: string, type?: AlertType) => void;
+  showAlert: (message: string, type?: AlertType, timeout?: number) => void;
   closeAlert: () => void;
 }
 
@@ -29,36 +28,41 @@ export function AlertProvider({ children }: { children: React.ReactNode }) {
     open: false,
     message: "",
     type: "info",
-    timeout:3000
   });
 
-  const showAlert = (message: string, type: AlertType = "info", timeout:number = DEFAULT_TIMEOUT) => {
-    setAlert({ open: true, message, type, timeout });
-  };
+  const timerRef = React.useRef<NodeJS.Timeout | null>(null);
 
-  
+  const showAlert = (message: string, type: AlertType = "info", timeout: number = DEFAULT_TIMEOUT) => {
+    setAlert({ open: true, message, type });
+
+    // Clear previous timeout to prevent memory leaks
+    if (timerRef.current) clearTimeout(timerRef.current);
+
+    timerRef.current = setTimeout(() => {
+      closeAlert();
+    }, timeout);
+  };
 
   const closeAlert = () => {
-    setAlert((prev) => ({ ...prev, open: false, timeout:DEFAULT_TIMEOUT }));
+    setAlert((prev) => ({ ...prev, open: false }));
   };
 
-  if(alert.open){
-    setTimeout(closeAlert, alert.timeout);
-  }
+  // Cleanup timeout when component unmounts
+  React.useEffect(() => {
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, []);
 
   return (
     <AlertContext.Provider value={{ showAlert, closeAlert }}>
-      <Box sx={{ width: "fit-content", position: "fixed", top: 20, right:20, zIndex: 1000 }}>
+      {children}
+      <Box sx={{ position: "fixed", top: 20, right: 20, zIndex: 1000 }}>
         <Collapse in={alert.open}>
           <Alert
             severity={alert.type}
             action={
-              <IconButton
-                aria-label="close"
-                color="inherit"
-                size="small"
-                onClick={closeAlert}
-              >
+              <IconButton aria-label="close" color="inherit" size="small" onClick={closeAlert}>
                 <CloseIcon fontSize="inherit" />
               </IconButton>
             }
@@ -67,7 +71,6 @@ export function AlertProvider({ children }: { children: React.ReactNode }) {
           </Alert>
         </Collapse>
       </Box>
-      {children}
     </AlertContext.Provider>
   );
 }

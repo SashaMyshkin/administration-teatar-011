@@ -23,7 +23,7 @@ export default async function RootLayout({
       <body>
         <AppRouterCacheProvider>
           <ThemeProvider theme={defaultTheme}>
-            <AlertProvider>{!session ? <Login /> : children}</AlertProvider>
+            {!session ? <AlertProvider><Login /></AlertProvider>: children}
           </ThemeProvider>
         </AppRouterCacheProvider>
       </body>
