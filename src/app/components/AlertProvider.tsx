@@ -13,6 +13,7 @@ interface AlertState {
   open: boolean;
   message: string;
   type: AlertType;
+  timeout: number;
 }
 
 interface AlertContextProps {
@@ -21,21 +22,29 @@ interface AlertContextProps {
 }
 
 const AlertContext = React.createContext<AlertContextProps | undefined>(undefined);
+const DEFAULT_TIMEOUT = 5000;
 
 export function AlertProvider({ children }: { children: React.ReactNode }) {
   const [alert, setAlert] = React.useState<AlertState>({
     open: false,
     message: "",
     type: "info",
+    timeout:3000
   });
 
-  const showAlert = (message: string, type: AlertType = "info") => {
-    setAlert({ open: true, message, type });
+  const showAlert = (message: string, type: AlertType = "info", timeout:number = DEFAULT_TIMEOUT) => {
+    setAlert({ open: true, message, type, timeout });
   };
 
+  
+
   const closeAlert = () => {
-    setAlert((prev) => ({ ...prev, open: false }));
+    setAlert((prev) => ({ ...prev, open: false, timeout:DEFAULT_TIMEOUT }));
   };
+
+  if(alert.open){
+    setTimeout(closeAlert, alert.timeout);
+  }
 
   return (
     <AlertContext.Provider value={{ showAlert, closeAlert }}>
