@@ -1,9 +1,4 @@
 "use client";
-import "./globals.css";
-import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
-import { ThemeProvider } from "@mui/material/styles";
-import defaultTheme from "../../theme";
-import Link from "next/link";
 
 import { styled, useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
@@ -18,12 +13,8 @@ import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
 import React from "react";
 
 const drawerWidth = 240;
@@ -87,7 +78,7 @@ const DrawerHeader = styled("div")(({ theme }) => ({
   justifyContent: "flex-end",
 }));
 
-export default function RootLayout({
+export default function Menu({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -104,118 +95,110 @@ export default function RootLayout({
   };
 
   return (
-    <html lang="en">
-      <body>
-        <AppRouterCacheProvider>
-          <ThemeProvider theme={defaultTheme}>
-            <Box sx={{ display: "flex" }}>
-              <CssBaseline />
-              <AppBar position="fixed" open={open}>
-                <Toolbar>
-                  <IconButton
-                    color="inherit"
-                    aria-label="open drawer"
-                    onClick={handleDrawerOpen}
-                    edge="start"
-                    sx={[
-                      {
-                        mr: 2,
-                      },
-                      open && { display: "none" },
-                    ]}
-                  >
-                    <MenuIcon />
-                  </IconButton>
-                  <Typography variant="h6" noWrap component="div">
-                    Administracija sajta
-                  </Typography>
-                </Toolbar>
-              </AppBar>
-              <Drawer
-                sx={{
-                  width: drawerWidth,
-                  flexShrink: 0,
-                  "& .MuiDrawer-paper": {
-                    width: drawerWidth,
-                    boxSizing: "border-box",
-                  },
-                }}
-                variant="persistent"
-                anchor="left"
-                open={open}
-              >
-                <DrawerHeader>
-                  <IconButton onClick={handleDrawerClose}>
-                    {theme.direction === "ltr" ? (
-                      <ChevronLeftIcon />
-                    ) : (
-                      <ChevronRightIcon />
-                    )}
-                  </IconButton>
-                </DrawerHeader>
-                <Divider />
-                <List>
-                  {getBoxMenuDetails().map(({text, href, divider}, index) => {
-                    if(divider){
-                      return (<Divider key={index}></Divider>)
-                    } else {
-                      return (
-                        <ListItemButton component="a" href={href} key={index}>
-                          <ListItemText primary={text} />
-                        </ListItemButton>
-                      )
-                    }
-                  })}
-                </List>
-              </Drawer>
-              <Main open={open}>
-                <DrawerHeader />
-                {children}
-              </Main>
-            </Box>
-          </ThemeProvider>
-        </AppRouterCacheProvider>
-      </body>
-    </html>
+    <Box sx={{ display: "flex" }}>
+      <CssBaseline />
+      <AppBar position="fixed" open={open}>
+        <Toolbar>
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            onClick={handleDrawerOpen}
+            edge="start"
+            sx={[
+              {
+                mr: 2,
+              },
+              open && { display: "none" },
+            ]}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Typography variant="h6" noWrap component="div">
+            Administracija sajta
+          </Typography>
+        </Toolbar>
+      </AppBar>
+      <Drawer
+        sx={{
+          width: drawerWidth,
+          flexShrink: 0,
+          "& .MuiDrawer-paper": {
+            width: drawerWidth,
+            boxSizing: "border-box",
+          },
+        }}
+        variant="persistent"
+        anchor="left"
+        open={open}
+      >
+        <DrawerHeader>
+          <IconButton onClick={handleDrawerClose}>
+            {theme.direction === "ltr" ? (
+              <ChevronLeftIcon />
+            ) : (
+              <ChevronRightIcon />
+            )}
+          </IconButton>
+        </DrawerHeader>
+        <Divider />
+        <List>
+          {getBoxMenuDetails().map(({ text, href, divider }, index) => {
+            if (divider) {
+              return <Divider key={index}></Divider>;
+            } else {
+              return (
+                <ListItemButton component="a" href={href} key={index}>
+                  <ListItemText primary={text} />
+                </ListItemButton>
+              );
+            }
+          })}
+        </List>
+      </Drawer>
+      <Main open={open}>
+        <DrawerHeader />
+        {children}
+      </Main>
+    </Box>
   );
 }
 
-function getBoxMenuDetails(){
+function getBoxMenuDetails() {
   return [
     {
-      text:"Audicije",
-      href:"/auditions",
+      text: "Audicije",
+      href: "/auditions",
       divider: false,
     },
     {
-      text:"Kandidati",
-      href:"/candidates",
+      text: "Kandidati",
+      href: "/candidates",
       divider: false,
     },
     {
-      text:"Komunikacija sa kandidatima",
-      href:"/communication",
+      text: "Komunikacija sa kandidatima",
+      href: "/communication",
       divider: false,
     },
     {
-      text:"",
-      href:"",
+      text: "",
+      href: "",
       divider: true,
     },
     {
-      text:"Predstave",
-      href:"/performances",
+      text: "Predstave",
+      href: "/performances",
       divider: false,
     },
     {
-      text:"Članovi",
-      href:"/members",
+      text: "Članovi",
+      href: "/members",
       divider: false,
     },
     {
-      text:"Vesti",
-      href:"/news",
+      text: "Vesti",
+      href: "/news",
       divider: false,
     },
-  ]
+  ];
 }

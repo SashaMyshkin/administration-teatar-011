@@ -6,6 +6,7 @@ import { ThemeProvider } from "@mui/material/styles";
 import defaultTheme from "@/theme";
 import { auth } from "@/auth";
 import { AlertProvider } from "@components/AlertProvider";
+import Menu from "@components/Menu";
 
 export default async function RootLayout({
   children,
@@ -23,7 +24,7 @@ export default async function RootLayout({
       <body>
         <AppRouterCacheProvider>
           <ThemeProvider theme={defaultTheme}>
-            {!session ? <AlertProvider><Login /></AlertProvider>: children}
+            {!session ? <AlertProvider><Login /></AlertProvider>: <Menu>{children}</Menu>}
           </ThemeProvider>
         </AppRouterCacheProvider>
       </body>
