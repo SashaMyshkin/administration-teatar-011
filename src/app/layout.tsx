@@ -5,11 +5,15 @@ import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
 import { ThemeProvider } from "@mui/material/styles";
 import defaultTheme from "@/theme";
 import { auth } from "@/auth";
+import { AlertProvider } from "@components/AlertProvider";
 
-export default async function  RootLayout({ children }: { children: ReactNode }) {
-
+export default async function RootLayout({
+  children,
+}: {
+  children: ReactNode;
+}) {
   const session = await auth();
-  
+
   return (
     <html lang="en">
       <head>
@@ -19,10 +23,9 @@ export default async function  RootLayout({ children }: { children: ReactNode })
       <body>
         <AppRouterCacheProvider>
           <ThemeProvider theme={defaultTheme}>
-          {!session ? <Login /> : children}
+            <AlertProvider>{!session ? <Login /> : children}</AlertProvider>
           </ThemeProvider>
         </AppRouterCacheProvider>
-
       </body>
     </html>
   );
