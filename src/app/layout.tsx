@@ -1,11 +1,15 @@
 import { ReactNode } from "react";
 import "./globals.css";
-import Login from "@components/Login";
+import Login from "@/app/components/Login";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
 import { ThemeProvider } from "@mui/material/styles";
 import defaultTheme from "@/theme";
+import { auth } from "@/auth";
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default async function  RootLayout({ children }: { children: ReactNode }) {
+
+  const session = await auth();
+  
   return (
     <html lang="en">
       <head>
@@ -15,11 +19,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body>
         <AppRouterCacheProvider>
           <ThemeProvider theme={defaultTheme}>
-            <Login></Login>
+          {!session ? <Login /> : children}
           </ThemeProvider>
         </AppRouterCacheProvider>
 
-        {children}
       </body>
     </html>
   );

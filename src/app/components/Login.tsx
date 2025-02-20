@@ -1,5 +1,3 @@
-"use client";
-
 import * as React from "react";
 import {
   Container,
@@ -9,30 +7,11 @@ import {
   Box,
   SxProps,
 } from "@mui/material";
+import { signIn } from "@/auth";
 
 export default  function LoginPage(): React.JSX.Element {
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    
-    try {
-      const options:RequestInit = {
-        method:"POST",
-        body: new FormData(event.currentTarget)
-      }
-     
-      const url = new URL(process.env.NEXT_PUBLIC_API ?? "");
-      url.pathname += 'auth/';
-
-      const response = await fetch(url, options);
-      const result = await response.json();
   
-    } catch (err) {
-      console.log(err)
-    }
-    
-
-    
-  };
+  
 
   return (
     <Box
@@ -46,7 +25,15 @@ export default  function LoginPage(): React.JSX.Element {
 				bgcolor:"background.default",
       }}
     >
-      <Box component="form" sx={formStyles} onSubmit={handleSubmit} method="POST"> 
+      <Box component="form" sx={formStyles} action={async (formData) => {
+        "use server"
+        await signIn("credentials",{
+          username: formData.get("username"),
+          password: formData.get("password"),
+          redirectTo:"/",
+          /*redirect: false, // Prevent auto-redirect for debugging*/
+        })
+      }}> 
         <Typography component="h1" variant="h6" textAlign="center">
           Administracija
         </Typography>
