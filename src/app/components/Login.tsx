@@ -1,17 +1,41 @@
+"use client"
+
 import * as React from "react";
 import {
-  Container,
   Typography,
   TextField,
   Button,
   Box,
   SxProps,
 } from "@mui/material";
-import { signIn } from "@/auth";
+import { useAlert } from "@components/AlertProvider";
+import { signIn } from "next-auth/react";
 
 export default  function LoginPage(): React.JSX.Element {
-  
-  
+  const { showAlert } = useAlert();
+
+  async function handleSubmit(e:React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+
+    const form = e.currentTarget; // Use e.currentTarget instead of e.target for better type safety
+    const formData = new FormData(form);
+    const username = formData.get("username") as string;
+    const password = formData.get("password") as string;
+
+    const res = await signIn("credentials", {
+      username,
+      password,
+      redirect: false,
+    });
+
+    console.log(res)
+
+    if (res?.error) {
+      showAlert(res.error, "error"); // Display error message
+    } else {
+      showAlert("Uspešno ste se prijavili!", "success"); // Success message
+    }
+  }
 
   return (
     <Box
@@ -25,15 +49,7 @@ export default  function LoginPage(): React.JSX.Element {
 				bgcolor:"background.default",
       }}
     >
-      <Box component="form" sx={formStyles} action={async (formData) => {
-        "use server"
-        await signIn("credentials",{
-          username: formData.get("username"),
-          password: formData.get("password"),
-          redirectTo:"/",
-          /*redirect: false, // Prevent auto-redirect for debugging*/
-        })
-      }}> 
+      <Box component="form" sx={formStyles} onSubmit={handleSubmit}> 
         <Typography component="h1" variant="h6" textAlign="center">
           Administracija
         </Typography>

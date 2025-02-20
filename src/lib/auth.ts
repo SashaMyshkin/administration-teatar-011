@@ -8,9 +8,7 @@ export const getUserFromDB = async (
   password: string
 ): Promise<CustomUser | null> => {
 
-  try{
-
-    const result = await db
+  const result = await db
     .select({
       id: users.id,
       username: users.username,
@@ -29,12 +27,4 @@ export const getUserFromDB = async (
     surname: result[0].surname,
   };
 
-  } catch(error) {
-    console.error(error);
-    return null;
-  }
-
-  
-
-  
 };
