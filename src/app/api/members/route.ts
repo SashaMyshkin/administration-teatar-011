@@ -1,7 +1,8 @@
 import { auth } from "@/auth";
 import db from "@/db";
 import { members } from "@/db/schemas/members";
-import { and, like } from "drizzle-orm"; // Import filtering functions
+import { membershipStatus } from "@/db/schemas/membershipStatus";
+import { and, like, eq } from "drizzle-orm"; // Import filtering functions
 
 const DEFAULT_OFFSET = 0;
 const DEFAULT_LIMIT = 10;
@@ -28,13 +29,29 @@ export async function GET(request: Request) {
   const conditions = and(
     nameFilter ? like(members.name, `%${nameFilter}%`) : undefined,
     surnameFilter ? like(members.surname, `%${surnameFilter}%`) : undefined,
-    statusFilter ? like(members.membershipStatus, `%${statusFilter}%`) : undefined,
+    statusFilter
+      ? like(members.membershipStatus, `%${statusFilter}%`)
+      : undefined,
     activeFilter ? like(members.active, `%${activeFilter}%`) : undefined
   );
 
   const resultSet = await db
-    .select()
+    .select({
+      id: members.id,
+      name:members.name,
+      surname:members.surname,
+      dateOfJoining:members.dateOfJoining,
+      dateOfBirth:members.dateOfBirth,
+      email: members.email,
+      active: members.active,
+      membershipStatus: membershipStatus.status,
+      membershipStatusId: membershipStatus.id
+    })
     .from(members)
+    .innerJoin(
+      membershipStatus,
+      eq(membershipStatus.id, members.membershipStatus)
+    )
     .where(conditions)
     .orderBy(members.dateOfJoining)
     .limit(limit)

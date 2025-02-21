@@ -9,10 +9,13 @@ import {
   FormControl,
   InputLabel,
   Box,
+  useTheme,
 } from "@mui/material";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { format } from "date-fns";
 import { useEffect, useState } from "react";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import ClearIcon from "@mui/icons-material/Clear";
 
 const DEFAULT_PAGE = 0;
 const DEFAULT_LIMIT = 5;
@@ -31,6 +34,24 @@ export default function Members() {
     membershipStatus: "",
     active: "1",
   });
+  const [membershipStatus, setMembershipStatus] = useState([]);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const urlString = `${process.env.NEXT_PUBLIC_API}membershipStatus`;
+        const url = new URL(urlString);
+        const response = await fetch(url);
+        const json = await response.json();
+        const resultSet = json.resultSet;
+        setMembershipStatus(resultSet);
+      } catch (err) {
+        console.log(err);
+      }
+    }
+
+    fetchData();
+  }, []);
 
   useEffect(() => {
     async function fetchData() {
@@ -79,8 +100,9 @@ export default function Members() {
 
       {/* Filter Inputs */}
       <div style={{ display: "flex", gap: "1rem", marginBottom: "1rem" }}>
-        <Box style={{ flexGrow: 1 }}>
+        <Box style={{ flex: 1, minWidth: 0 }}>
           <TextField
+            fullWidth
             label="Ime"
             variant="outlined"
             size="small"
@@ -89,8 +111,9 @@ export default function Members() {
           />
         </Box>
 
-        <Box style={{ flexGrow: 1 }}>
+        <Box style={{ flex: 1, minWidth: 0 }}>
           <TextField
+            fullWidth
             label="Prezime"
             variant="outlined"
             size="small"
@@ -101,19 +124,33 @@ export default function Members() {
           />
         </Box>
 
-        <Box style={{ flexGrow: 1 }}>
-          <TextField
-            label="Status članstva"
-            variant="outlined"
-            size="small"
-            value={filters.membershipStatus}
-            onChange={(e) =>
-              setFilters({ ...filters, membershipStatus: e.target.value })
-            }
-          />
+        <Box style={{ flex: 1, minWidth: 0 }}>
+          <FormControl fullWidth size="small">
+            <InputLabel id="membershipStatus-label">Status članstva</InputLabel>
+            <Select
+              labelId="membershipStatus-label"
+              id="membershipStatus"
+              variant="outlined"
+              value={filters.membershipStatus}
+              label="Status članstva"
+              onChange={(e) =>
+                setFilters({ ...filters, membershipStatus: e.target.value })
+              }
+            >
+              <MenuItem value="">Svi</MenuItem>
+              {membershipStatus &&
+                membershipStatus.map(({ id, status }) => {
+                  return (
+                    <MenuItem value={id} key={status}>
+                      {status}
+                    </MenuItem>
+                  );
+                })}
+            </Select>
+          </FormControl>
         </Box>
 
-        <Box style={{ flexGrow: 1 }}>
+        <Box style={{ flex: 1, minWidth: 0 }}>
           <FormControl fullWidth size="small">
             <InputLabel id="active-label">Aktivan</InputLabel>
             <Select
@@ -151,6 +188,7 @@ export default function Members() {
 }
 
 function getColumns(): GridColDef[] {
+  const theme = useTheme();
   return [
     {
       field: "name",
@@ -159,6 +197,8 @@ function getColumns(): GridColDef[] {
       flex: 1,
       filterable: false,
       sortable: false,
+      align: "center",
+      headerAlign: "center",
     },
     {
       field: "surname",
@@ -167,6 +207,8 @@ function getColumns(): GridColDef[] {
       flex: 1,
       filterable: false,
       sortable: false,
+      align: "center",
+      headerAlign: "center",
     },
     {
       field: "email",
@@ -175,6 +217,8 @@ function getColumns(): GridColDef[] {
       flex: 1,
       filterable: false,
       sortable: false,
+      align: "center",
+      headerAlign: "center",
     },
     {
       field: "dateOfBirth",
@@ -184,8 +228,10 @@ function getColumns(): GridColDef[] {
       filterable: false,
       sortable: false,
       valueFormatter: (value) => {
-        return (value != null) ? format(new Date(value), "dd. MM. yyyy.") : "";
+        return value != null ? format(new Date(value), "dd. MM. yyyy.") : "";
       },
+      align: "center",
+      headerAlign: "center",
     },
     {
       field: "dateOfJoining",
@@ -195,8 +241,10 @@ function getColumns(): GridColDef[] {
       filterable: false,
       sortable: false,
       valueFormatter: (value) => {
-        return (value != null) ? format(new Date(value), "dd. MM. yyyy."):"";
+        return value != null ? format(new Date(value), "dd. MM. yyyy.") : "";
       },
+      align: "center",
+      headerAlign: "center",
     },
     {
       field: "membershipStatus",
@@ -205,6 +253,8 @@ function getColumns(): GridColDef[] {
       flex: 1,
       filterable: false,
       sortable: false,
+      align: "center",
+      headerAlign: "center",
     },
     {
       field: "active",
@@ -213,6 +263,15 @@ function getColumns(): GridColDef[] {
       flex: 1,
       filterable: false,
       sortable: false,
+      renderCell: (params: GridRenderCellParams<any, Number>) => {
+        console.log(params);
+        if (params.value === 1)
+          return <CheckCircleIcon sx={{ color: theme.palette.success.main }} />;
+
+        return <ClearIcon sx={{ color: theme.palette.error.main }} />;
+      },
+      align: "center",
+      headerAlign: "center",
     },
   ];
 }
