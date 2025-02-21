@@ -1,5 +1,6 @@
 'use client';
 import { createTheme } from '@mui/material/styles';
+import { srRS } from '@mui/material/locale';
 
 const defaultTheme = createTheme({
   palette: {
@@ -50,6 +51,6 @@ const defaultTheme = createTheme({
     },
   },
   cssVariables: true,
-});
+}, srRS,);
 
 export default defaultTheme;
