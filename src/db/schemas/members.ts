@@ -19,6 +19,8 @@ export const members = mysqlTable("members", {
   active: tinyint("active").notNull(),
 });
 
+export type MemberProps = typeof members.$inferSelect;
+
 /*export const membershipStatus = mysqlTable("membershipStatus", {
   id: int("id").unsigned().notNull().primaryKey().autoincrement(),
 });
