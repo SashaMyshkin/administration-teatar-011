@@ -14,7 +14,6 @@ import {
   Theme,
 } from "@mui/material";
 import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
-import { format } from "date-fns"; // Date formatting utility
 import { useEffect, useState } from "react";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle"; // Success icon
 import ClearIcon from "@mui/icons-material/Clear"; // Error icon
@@ -228,22 +227,10 @@ function getColumns(theme: Theme): GridColDef[] {
       filterable:false,
     },
     {
-      field: "email",
-      headerName: "Imejl",
+      field: "membershipStatus",
+      headerName: "Status članstva",
       type: "string",
       flex: 1,
-      align: "center",
-      headerAlign: "center",
-      sortable:false,
-      filterable:false,
-    },
-    {
-      field: "dateOfBirth",
-      headerName: "Datum rođenja",
-      type: "string",
-      flex: 1,
-      valueFormatter: (value) =>
-        value != null ? format(new Date(value), "dd. MM. yyyy.") : "",
       align: "center",
       headerAlign: "center",
       sortable:false,

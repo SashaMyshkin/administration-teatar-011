@@ -40,12 +40,8 @@ export async function GET(request: Request) {
       id: members.id,
       name:members.name,
       surname:members.surname,
-      dateOfJoining:members.dateOfJoining,
-      dateOfBirth:members.dateOfBirth,
-      email: members.email,
       active: members.active,
       membershipStatus: membershipStatus.status,
-      membershipStatusId: membershipStatus.id
     })
     .from(members)
     .innerJoin(
