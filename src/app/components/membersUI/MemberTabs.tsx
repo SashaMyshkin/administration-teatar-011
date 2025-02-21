@@ -7,6 +7,7 @@ import { MemberProps } from "@/db/schemas/members";
 import { membershipStatusProps } from "@/db/schemas/membershipStatus";
 import { useState } from "react";
 import { Typography } from "@mui/material";
+import CoreInfoTab from "@components/membersUI/CoreInfoTab";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -70,7 +71,7 @@ export default function MemberTabs({
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>
-        Osnovni podaci......
+        <CoreInfoTab coreInfo={coreInfo} membershipStatus={membershipStatus} />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
         Moto......
