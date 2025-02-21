@@ -13,11 +13,12 @@ import {
   useTheme,
   Theme,
 } from "@mui/material";
-import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
+import { DataGrid, GridColDef, GridRenderCellParams, GridRowParams } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle"; // Success icon
 import ClearIcon from "@mui/icons-material/Clear"; // Error icon
 import { useDebounce } from "use-debounce"; // Hook to optimize performance by delaying function execution
+import { useRouter } from "next/navigation";
 
 // Default pagination settings
 const DEFAULT_PAGE = 0;
@@ -103,6 +104,12 @@ export default function Members() {
     fetchData();
     return () => controller.abort(); // Cleanup function to cancel pending requests
   }, [paginationModel, filtersDebounced]); // Runs when pagination or filters change
+
+  const router = useRouter();
+
+  const handleRowClick = (params:GridRowParams) => {
+    router.push(`/members/${params.row.id}`);
+  };
 
   return (
     <div style={{ height: "auto", width: "90%", margin: "auto" }}>
@@ -198,6 +205,7 @@ export default function Members() {
         sortingMode="server"
         filterMode="server"
         onPaginationModelChange={setPaginationModel}
+        onRowClick={handleRowClick}
       />
     </div>
   );
