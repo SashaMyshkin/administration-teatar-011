@@ -214,6 +214,8 @@ function getColumns(theme: Theme): GridColDef[] {
       flex: 1,
       align: "center",
       headerAlign: "center",
+      sortable:false,
+      filterable:false,
     },
     {
       field: "surname",
@@ -222,6 +224,8 @@ function getColumns(theme: Theme): GridColDef[] {
       flex: 1,
       align: "center",
       headerAlign: "center",
+      sortable:false,
+      filterable:false,
     },
     {
       field: "email",
@@ -230,6 +234,8 @@ function getColumns(theme: Theme): GridColDef[] {
       flex: 1,
       align: "center",
       headerAlign: "center",
+      sortable:false,
+      filterable:false,
     },
     {
       field: "dateOfBirth",
@@ -240,6 +246,8 @@ function getColumns(theme: Theme): GridColDef[] {
         value != null ? format(new Date(value), "dd. MM. yyyy.") : "",
       align: "center",
       headerAlign: "center",
+      sortable:false,
+      filterable:false,
     },
     {
       field: "active",
@@ -254,6 +262,8 @@ function getColumns(theme: Theme): GridColDef[] {
         ),
       align: "center",
       headerAlign: "center",
+      sortable:false,
+      filterable:false,
     },
   ];
 }
