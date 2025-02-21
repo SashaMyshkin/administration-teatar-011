@@ -4,6 +4,7 @@ import { members } from "@/db/schemas/members";
 import { membershipStatus } from "@/db/schemas/membershipStatus";
 import { notFound } from "next/navigation";
 import MemberTabs from "@/app/components/membersUI/MemberTabs";
+import { AlertProvider } from "@/app/components/AlertProvider";
 
 export default async function Page({
   params,
@@ -18,7 +19,11 @@ export default async function Page({
   const resultMembershipStatus = await db.select().from(membershipStatus);
 
   if (idParam === "new")
-    return <MemberTabs coreInfo={null} membershipStatus={resultMembershipStatus} />;
+    return (
+      <AlertProvider>
+        <MemberTabs coreInfo={null} membershipStatus={resultMembershipStatus} />
+      </AlertProvider>
+    );
 
   const resultMember = await db
     .select()
@@ -26,9 +31,11 @@ export default async function Page({
     .where(eq(members.id, id));
 
   return (
-    <MemberTabs
-      coreInfo={resultMember[0]}
-      membershipStatus={resultMembershipStatus}
-    />
+    <AlertProvider>
+      <MemberTabs
+        coreInfo={resultMember[0]}
+        membershipStatus={resultMembershipStatus}
+      />
+    </AlertProvider>
   );
 }

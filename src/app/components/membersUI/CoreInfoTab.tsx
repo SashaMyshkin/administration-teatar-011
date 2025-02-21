@@ -14,12 +14,13 @@ import {
 } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import { formatDate } from "date-fns";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import PermIdentityIcon from "@mui/icons-material/PermIdentity";
-import FingerprintIcon from "@mui/icons-material/Fingerprint";
 import TheaterComedyIcon from "@mui/icons-material/TheaterComedy";
 import DatasetIcon from "@mui/icons-material/Dataset";
 import { useRouter } from "next/navigation";
+import { formatDateInput, isEmailValid, validateDate } from "@/lib/validation";
+import { useAlert } from "@components/AlertProvider";
 
 export default function CoreInfoTab({
   coreInfo,
@@ -28,7 +29,12 @@ export default function CoreInfoTab({
   coreInfo: MemberProps | null;
   membershipStatus: membershipStatusProps[];
 }) {
-	const router = useRouter();
+  const router = useRouter();
+
+  const [errors, setErrors] = useState<
+    Record<string, { error: boolean; message: string }>
+  >({});
+  const { showAlert } = useAlert();
   const [data, setData] = useState({
     name: coreInfo?.name,
     nameCyr: coreInfo?.nameCyr,
@@ -36,26 +42,79 @@ export default function CoreInfoTab({
     surnameCyr: coreInfo?.surnameCyr,
     email: coreInfo?.email,
     dateOfBirth: coreInfo?.dateOfBirth
-      ? formatDate(coreInfo.dateOfBirth, "dd. MM. yyy")
+      ? formatDate(coreInfo.dateOfBirth, "dd. MM. yyyy")
       : "",
     dateOfJoining: coreInfo?.dateOfJoining
-      ? formatDate(coreInfo.dateOfJoining, "dd. MM. yyy")
+      ? formatDate(coreInfo.dateOfJoining, "dd. MM. yyyy")
       : "",
     exitDate: coreInfo?.exitDate
-      ? formatDate(coreInfo.exitDate, "dd. MM. yyy")
+      ? formatDate(coreInfo.exitDate, "dd. MM. yyyy")
       : "",
     img: coreInfo?.img ? coreInfo.img : "/assets/img/ime-prezime/profilna.jpg",
-    alt: coreInfo?.alt ? coreInfo.alt : "Slika člana teatra",
+    alt: coreInfo?.alt,
     membershipStatus: coreInfo?.membershipStatus
       ? String(coreInfo.membershipStatus)
       : "1",
     identifier: coreInfo?.identifier ? coreInfo.identifier : "ime-prezime",
   });
 
-	
+  // Validate all fields on form submit
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+
+    const formData = new FormData(e.currentTarget);
+    const values: Record<string, string> = {};
+
+    formData.forEach((value, key) => {
+      values[key] = value.toString();
+    });
+
+    const errors = validateFields(values);
+
+    setErrors(errors);
+
+    if (Object.values(errors).some((err) => err.error)) {
+      return; // Prevent form submission if there are errors
+    }
+
+    const urlString = coreInfo
+      ? `${process.env.NEXT_PUBLIC_API}/members/${coreInfo.id}`
+      : `${process.env.NEXT_PUBLIC_API}/members/`;
+
+    const result = await fetch(urlString, {
+      method: coreInfo ? "PUT" : "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    
+
+    const response = await result.json();
+
+    if(!coreInfo)
+      router.push(`/members/${response.responseData[0].insertId}`);
+
+    showAlert(response.message, (response.success)?"success":"error");
+    
+    
+  }
+
+  // Validate single field on blur
+  function validateField(e: React.FocusEvent<HTMLInputElement>) {
+    const { id, value } = e.currentTarget;
+
+    const fieldErrors = validateFields({ [id]: value });
+
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [id]: fieldErrors[id] || { error: false, message: "" },
+    }));
+  }
 
   return (
-    <>
+    <form onSubmit={handleSubmit} noValidate>
       <Typography
         variant="h5"
         component="h1"
@@ -70,6 +129,7 @@ export default function CoreInfoTab({
             <TextField
               fullWidth
               id="name"
+              name="name"
               label="Ime"
               value={data.name}
               variant="standard"
@@ -87,12 +147,16 @@ export default function CoreInfoTab({
                   name: e.target.value,
                 })
               }
+              error={errors.name?.error}
+              helperText={errors.name?.message}
+              onBlur={validateField}
             />
           </Grid>
           <Grid size={2}>
             <TextField
               fullWidth
               id="nameCyr"
+              name="nameCyr"
               label="Ime - ćirilica"
               value={data.nameCyr}
               variant="standard"
@@ -105,6 +169,7 @@ export default function CoreInfoTab({
               fullWidth
               required
               id="surname"
+              name="surname"
               label="Prezime"
               value={data.surname}
               variant="standard"
@@ -121,12 +186,16 @@ export default function CoreInfoTab({
                   ),
                 })
               }
+              onBlur={validateField}
+              error={errors.surname?.error}
+              helperText={errors.surname?.message}
             />
           </Grid>
           <Grid size={2}>
             <TextField
               fullWidth
               id="surnameCyr"
+              name="surnameCyr"
               label="Prezime - ćirilica"
               value={data.surnameCyr}
               variant="standard"
@@ -138,25 +207,36 @@ export default function CoreInfoTab({
             <TextField
               fullWidth
               id="email"
+              name="email"
               label="Imejl"
               value={data.email}
               variant="standard"
               size="small"
               onChange={(e) => setData({ ...data, email: e.target.value })}
+              onBlur={validateField}
+              error={errors.email?.error}
+              helperText={errors.email?.message}
             />
           </Grid>
           <Grid size={2}>
             <TextField
               fullWidth
               id="dateOfBirth"
+              name="dateOfBirth"
               label="Datum rođenja"
               value={data.dateOfBirth}
               variant="standard"
               size="small"
               placeholder=""
               onChange={(e) =>
-                setData({ ...data, dateOfBirth: e.target.value })
+                setData({
+                  ...data,
+                  dateOfBirth: formatDateInput(e.target.value),
+                })
               }
+              onBlur={validateField}
+              error={errors.dateOfBirth?.error}
+              helperText={errors.dateOfBirth?.message}
             />
           </Grid>
         </Grid>
@@ -182,14 +262,21 @@ export default function CoreInfoTab({
               fullWidth
               required
               id="dateOfJoining"
+              name="dateOfJoining"
               label="Datum upisa"
               value={data.dateOfJoining}
               variant="standard"
               size="small"
               placeholder=""
               onChange={(e) =>
-                setData({ ...data, dateOfJoining: e.target.value })
+                setData({
+                  ...data,
+                  dateOfJoining: formatDateInput(e.target.value),
+                })
               }
+              onBlur={validateField}
+              error={errors.dateOfJoining?.error}
+              helperText={errors.dateOfJoining?.message}
             />
           </Grid>
           <Grid size={2}>
@@ -197,11 +284,17 @@ export default function CoreInfoTab({
               fullWidth
               id="exitDate"
               label="Datum izlaska"
+              name="exitDate"
               value={data.exitDate}
               variant="standard"
               size="small"
               placeholder=""
-              onChange={(e) => setData({ ...data, exitDate: e.target.value })}
+              onChange={(e) =>
+                setData({ ...data, exitDate: formatDateInput(e.target.value) })
+              }
+              onBlur={validateField}
+              error={errors.exitDate?.error}
+              helperText={errors.exitDate?.message}
             />
           </Grid>
           <Grid size={2}>
@@ -212,6 +305,7 @@ export default function CoreInfoTab({
               <Select
                 labelId="membershipStatus-label"
                 id="membershipStatus"
+                name="membershipStatus"
                 value={data.membershipStatus}
                 label="Status članstva"
                 onChange={(e) =>
@@ -250,6 +344,7 @@ export default function CoreInfoTab({
               fullWidth
               required
               id="alt"
+              name="alt"
               label="Alternativni tekst"
               value={data.alt}
               variant="standard"
@@ -257,12 +352,16 @@ export default function CoreInfoTab({
               placeholder=""
               onChange={(e) => setData({ ...data, alt: e.target.value })}
               title="Alternativni tekst se prikazuje u slučaju ako sajt ne može da prikaže sliku ili biva pročitan od strane softvera za slepe."
+              onBlur={validateField}
+              error={errors.alt?.error}
+              helperText={errors.alt?.message}
             />
           </Grid>
           <Grid size={4}>
             <TextField
               fullWidth
               id="img"
+              name="img"
               label="Putanja do slike"
               value={data.img}
               variant="standard"
@@ -279,7 +378,8 @@ export default function CoreInfoTab({
           <Grid size={4}>
             <TextField
               fullWidth
-              id="alt"
+              id="identifier"
+              name="identifier"
               label="Identifikator"
               value={data.identifier}
               variant="standard"
@@ -295,17 +395,81 @@ export default function CoreInfoTab({
         </Grid>
       </Box>
       <Box
-        sx={{ display: "flex", justifyContent: "center", marginTop: "1.8rem", gap:"0.7rem" }}
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          marginTop: "1.8rem",
+          gap: "0.7rem",
+        }}
       >
-        <Button variant="contained" color="secondary" size="small" type="button" onClick={router.back}>
+        <Button
+          variant="contained"
+          color="secondary"
+          size="small"
+          type="button"
+          onClick={()=>{router.push(`/members/`)}}
+        >
           Nazad
         </Button>
-        <Button variant="contained" color="primary" size="small">
+        <Button variant="contained" color="primary" size="small" type="submit">
           Sačuvaj
         </Button>
       </Box>
-    </>
+    </form>
   );
+}
+
+function validateFields(values: Record<string, string>) {
+  const errors: Record<string, { error: boolean; message: string }> = {};
+
+  if (values.name === "") {
+    errors.name = { error: true, message: "Ime je obavezan podatak" };
+  }
+
+  if (values.surname === "") {
+    errors.surname = { error: true, message: "Prezime je obavezan podatak" };
+  }
+
+  if (values.dateOfJoining === "") {
+    errors.dateOfJoining = {
+      error: true,
+      message: "Datum upisa je obavezan podatak",
+    };
+  } else {
+    const res = validateDate(values.dateOfJoining);
+    if (res.error) {
+      errors.dateOfJoining = { error: true, message: res.message };
+    }
+  }
+
+  if (values.dateOfBirth) {
+    const res = validateDate(values.dateOfBirth);
+    if (res.error) {
+      errors.dateOfBirth = { error: true, message: res.message };
+    }
+  }
+
+  if (values.exitDate) {
+    const res = validateDate(values.exitDate);
+    if (res.error) {
+      errors.exitDate = { error: true, message: res.message };
+    }
+  }
+
+  if (values.alt === "") {
+    errors.alt = {
+      error: true,
+      message: "Alternativni tekst je obavezan podatak",
+    };
+  }
+
+  if (values.email) {
+    if (!isEmailValid(values.email)) {
+      errors.email = { error: true, message: "Neispravan format imejl adrese" };
+    }
+  }
+
+  return errors;
 }
 
 function convertToBaldLatin(input: string): string {
