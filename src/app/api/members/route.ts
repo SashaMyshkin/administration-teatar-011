@@ -12,7 +12,7 @@ const DEFAULT_LIMIT = 10;
 
 export async function GET(request: Request) {
   const session = await auth();
-  if (!session) return [];
+  if (!session) return Response.json([]);
 
   const url = new URL(request.url);
   const searchParams = url.searchParams;
