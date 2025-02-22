@@ -106,6 +106,7 @@ export default function Menu({
     });
 
     router.push("/");
+    router.refresh();
   }
 
   return (
