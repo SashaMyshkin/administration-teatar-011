@@ -12,6 +12,7 @@ import {
   Box,
   useTheme,
   Theme,
+  Button,
 } from "@mui/material";
 import { DataGrid, GridColDef, GridRenderCellParams, GridRowParams } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
@@ -113,8 +114,17 @@ export default function Members() {
 
   return (
     <div style={{ height: "auto", width: "90%", margin: "auto" }}>
-      <Typography align="left" component="h1" variant="h5">
-        Članovi
+      <Typography align="left" component="h1" variant="h5" sx={{display:"flex", justifyContent:"space-between", paddingBottom:"0.5rem"}}>
+        <span>Članovi</span> 
+        <Button
+          variant="contained"
+          color="primary"
+          size="small"
+          type="button"
+          onClick={()=>{router.push(`/members/new`)}}
+        >
+          Nov član
+        </Button>
       </Typography>
       <Divider sx={{ marginBottom: "1rem" }} />
 

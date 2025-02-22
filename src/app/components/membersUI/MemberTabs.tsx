@@ -64,16 +64,16 @@ export default function MemberTabs({
           sx={{display:"flex",justifyContent:"center"}}
         >
           <Tab label={coreInfoHeader} {...a11yProps(0)} />
-          <Tab label="Moto" {...a11yProps(1)} />
-          <Tab label="Biografija" {...a11yProps(2)} />
-          <Tab label="Fotografija" {...a11yProps(3)} />
-          <Tab label="Vidljivost na sajtu" {...a11yProps(4)} />
+          <Tab label="Moto" {...a11yProps(1)} disabled={!coreInfo} />
+          <Tab label="Biografija" {...a11yProps(2)} disabled={!coreInfo} />
+          <Tab label="Fotografija" {...a11yProps(3)} disabled={!coreInfo} />
+          <Tab label="Vidljivost na sajtu" {...a11yProps(4)} disabled={!coreInfo} />
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>
         <CoreInfoTab coreInfo={coreInfo} membershipStatus={membershipStatus} />
       </CustomTabPanel>
-      <CustomTabPanel value={value} index={1}>
+      <CustomTabPanel value={value} index={1} >
         Moto......
       </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>
