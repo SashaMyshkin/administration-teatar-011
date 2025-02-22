@@ -18,6 +18,8 @@ import ListItemText from "@mui/material/ListItemText";
 import React from "react";
 import { signOut } from "next-auth/react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+
 
 const drawerWidth = 240;
 
@@ -88,6 +90,8 @@ export default function Menu({
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
 
+  const router = useRouter();
+
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -98,8 +102,10 @@ export default function Menu({
 
   async function handleSigningOut(){
     const resp = await signOut({
-      redirectTo:"/",
+      redirect:false
     });
+
+    router.push("/");
   }
 
   return (

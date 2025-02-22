@@ -34,4 +34,5 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     maxAge: 15*60, // 15 minutes
     updateAge: 5*60 // 5 minutes
   },
+  trustHost:true
 });
