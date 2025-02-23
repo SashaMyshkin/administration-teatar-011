@@ -8,6 +8,9 @@ import { membershipStatusProps } from "@/db/schemas/membershipStatus";
 import { useState } from "react";
 import { Typography } from "@mui/material";
 import CoreInfoTab from "@components/membersUI/CoreInfoTab";
+import { scriptProps } from "@/db/schemas/scripts";
+import MottoTab from "@components/membersUI/MottoTab";
+import { mottoProps } from "@/db/schemas/mottos";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -41,9 +44,13 @@ function a11yProps(index: number) {
 export default function MemberTabs({
   coreInfo,
   membershipStatus,
+  scripts,
+  mottos
 }: {
   coreInfo: MemberProps | null;
   membershipStatus: membershipStatusProps[];
+  scripts:scriptProps[] | null;
+  mottos:mottoProps[] | null;
 }) {
   const [value, setValue] = useState(0);
 
@@ -74,7 +81,7 @@ export default function MemberTabs({
         <CoreInfoTab coreInfo={coreInfo} membershipStatus={membershipStatus} />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1} >
-        Moto......
+        {scripts && mottos && <MottoTab scripts={scripts} motto={mottos} />}
       </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>
         Biografija.....

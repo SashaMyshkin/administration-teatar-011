@@ -7,4 +7,4 @@ export const mottos = mysqlTable("mottos", {
   scriptId: int("scriptId").notNull()
 });
 
-export type mottosProps = typeof mottos.$inferSelect;
+export type mottoProps = typeof mottos.$inferSelect;
