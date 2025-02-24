@@ -7,6 +7,7 @@ import MemberTabs from "@/app/components/membersUI/MemberTabs";
 import { AlertProvider } from "@/app/components/AlertProvider";
 import { scripts } from "@/db/schemas/scripts";
 import { mottos } from "@/db/schemas/mottos";
+import { biographies } from "@/db/schemas/biographies";
 
 export default async function Page({
   params,
@@ -23,7 +24,13 @@ export default async function Page({
   if (idParam === "new")
     return (
       <AlertProvider>
-        <MemberTabs coreInfo={null} membershipStatus={resultMembershipStatus} scripts={null} mottos={null}/>
+        <MemberTabs
+          coreInfo={null}
+          membershipStatus={resultMembershipStatus}
+          scripts={null}
+          mottos={null}
+          biography={null}
+        />
       </AlertProvider>
     );
 
@@ -33,7 +40,14 @@ export default async function Page({
     .where(eq(members.id, id));
 
   const resultScripts = await db.select().from(scripts);
-  const resultMotto = await db.select().from(mottos).where(eq(mottos.memberId, id))
+  const resultMotto = await db
+    .select()
+    .from(mottos)
+    .where(eq(mottos.memberId, id));
+  const resultBiography = await db
+    .select()
+    .from(biographies)
+    .where(eq(biographies.memberId, id));
 
   return (
     <AlertProvider>
@@ -42,6 +56,7 @@ export default async function Page({
         membershipStatus={resultMembershipStatus}
         scripts={resultScripts}
         mottos={resultMotto}
+        biography={resultBiography}
       />
     </AlertProvider>
   );

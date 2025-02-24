@@ -11,6 +11,8 @@ import CoreInfoTab from "@components/membersUI/CoreInfoTab";
 import { scriptProps } from "@/db/schemas/scripts";
 import MottoTab from "@components/membersUI/MottoTab";
 import { mottoProps } from "@/db/schemas/mottos";
+import { biographyProps } from "@/db/schemas/biographies";
+import BiographyTab from "./BiographyTab";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -45,12 +47,14 @@ export default function MemberTabs({
   coreInfo,
   membershipStatus,
   scripts,
-  mottos
+  mottos,
+  biography,
 }: {
   coreInfo: MemberProps | null;
   membershipStatus: membershipStatusProps[];
-  scripts:scriptProps[] | null;
-  mottos:mottoProps[] | null;
+  scripts: scriptProps[] | null;
+  mottos: mottoProps[] | null;
+  biography: biographyProps[] | null;
 }) {
   const [value, setValue] = useState(0);
 
@@ -58,33 +62,40 @@ export default function MemberTabs({
     setValue(newValue);
   };
 
-  const coreInfoHeader = (coreInfo) ? `${coreInfo?.name} ${coreInfo?.surname}` : `Nov član`;
+  const coreInfoHeader = coreInfo
+    ? `${coreInfo?.name} ${coreInfo?.surname}`
+    : `Nov član`;
 
   return (
     <Box sx={{ width: "100%" }}>
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-        
         <Tabs
           value={value}
           onChange={handleChange}
           aria-label="basic tabs example"
-          sx={{display:"flex",justifyContent:"center"}}
+          sx={{ display: "flex", justifyContent: "center" }}
         >
           <Tab label={coreInfoHeader} {...a11yProps(0)} />
           <Tab label="Moto" {...a11yProps(1)} disabled={!coreInfo} />
           <Tab label="Biografija" {...a11yProps(2)} disabled={!coreInfo} />
           <Tab label="Fotografija" {...a11yProps(3)} disabled={!coreInfo} />
-          <Tab label="Vidljivost na sajtu" {...a11yProps(4)} disabled={!coreInfo} />
+          <Tab
+            label="Vidljivost na sajtu"
+            {...a11yProps(4)}
+            disabled={!coreInfo}
+          />
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>
         <CoreInfoTab coreInfo={coreInfo} membershipStatus={membershipStatus} />
       </CustomTabPanel>
-      <CustomTabPanel value={value} index={1} >
+      <CustomTabPanel value={value} index={1}>
         {scripts && mottos && <MottoTab scripts={scripts} motto={mottos} />}
       </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>
-        Biografija.....
+        {scripts && biography && (
+          <BiographyTab scripts={scripts} biography={biography}></BiographyTab>
+        )}
       </CustomTabPanel>
       <CustomTabPanel value={value} index={3}>
         Fotografija....
