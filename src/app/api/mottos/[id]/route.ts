@@ -28,7 +28,7 @@ export async function PUT(
       });
     }
 
-    const updated = db
+    const updated = await db
       .update(mottos)
       .set({
         motto: formData.motto,
@@ -45,5 +45,5 @@ export async function PUT(
     communication.success = false;
     communication.message = "Došlo je do kritične greške.";
     return NextResponse.json(communication, { status: 500 });
-  }
+  } 
 }

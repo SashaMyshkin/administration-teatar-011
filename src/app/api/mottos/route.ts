@@ -22,7 +22,7 @@ export async function POST(request: Request) {
 
     const formData = await request.json();
 
-    const newMotto = db.insert(mottos).values({
+    const newMotto = await db.insert(mottos).values({
       memberId: formData.memberId,
       scriptId: formData.scriptId,
       motto: formData.motto,
