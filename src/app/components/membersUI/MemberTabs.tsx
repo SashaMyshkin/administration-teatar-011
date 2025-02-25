@@ -12,7 +12,8 @@ import { scriptProps } from "@/db/schemas/scripts";
 import MottoTab from "@components/membersUI/MottoTab";
 import { mottoProps } from "@/db/schemas/mottos";
 import { biographyProps } from "@/db/schemas/biographies";
-import BiographyTab from "./BiographyTab";
+import BiographyTab from "@components/membersUI/BiographyTab";
+import {DndContext} from '@dnd-kit/core';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -94,7 +95,7 @@ export default function MemberTabs({
       </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>
         {scripts && biography && (
-          <BiographyTab scripts={scripts} biography={biography}></BiographyTab>
+          <DndContext> <BiographyTab scripts={scripts} biography={biography}></BiographyTab></DndContext>
         )}
       </CustomTabPanel>
       <CustomTabPanel value={value} index={3}>

@@ -22,7 +22,15 @@ import {
   TextField,
 } from "@mui/material";
 import Grid from "@mui/material/Grid2";
-import React, { ChangeEvent, FormEvent, useState } from "react";
+import React, { FormEvent, MouseEventHandler, useState } from "react";
+import { DndContext, closestCenter, DragEndEvent } from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  verticalListSortingStrategy,
+  useSortable,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 export default function BiographyTab({
   biography,
@@ -37,11 +45,26 @@ export default function BiographyTab({
   });
   const [open, setOpen] = useState(false);
   const [dataToUpdate, setDataToUpdate] = useState({
-    id:0,
-    paragraph:"",
-    memberId:0,
-    scriptId:0
+    id: 0,
+    paragraph: "",
+    memberId: 0,
+    scriptId: 0,
+    orderNumber: 0,
   });
+  const [items, setItems] = useState(biography);
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over) return;
+
+    if (active.id !== over.id) {
+      setItems((items) => {
+        const oldIndex = items.findIndex((item) => item.id === active.id);
+        const newIndex = items.findIndex((item) => item.id === over.id);
+        return arrayMove(items, oldIndex, newIndex);
+      });
+    }
+  };
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -54,7 +77,7 @@ export default function BiographyTab({
   function handleSubmit(e: FormEvent<HTMLFormElement>) {}
 
   return (
-    <>
+    <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
       <Grid
         container
         spacing={2}
@@ -63,7 +86,7 @@ export default function BiographyTab({
           marginBottom: "1.5rem",
           position: "sticky",
           top: 64,
-          zIndex:1,
+          zIndex: 1,
           backgroundColor: "background.paper",
           paddingBottom: "1rem",
           paddingLeft: "0.5rem",
@@ -117,6 +140,7 @@ export default function BiographyTab({
       </Grid>
 
       {scripts.map((script) => {
+        const scriptItems = items.filter((elem) => elem.scriptId === script.id);
         return (
           <React.Fragment key={script.id}>
             <Box>
@@ -130,70 +154,105 @@ export default function BiographyTab({
                 borderRadius: "10px",
               }}
             >
-              <List>
-                {biography
-                  .filter((elem) => elem.scriptId === script.id)
-                  .map((bio, index) => {
-                    return (
-                      <ListItemButton key={index} onClick={()=>{
+              <SortableContext
+                items={scriptItems}
+                strategy={verticalListSortingStrategy}
+              >
+                <List>
+                  {scriptItems.map((bio) => (
+                    <DraggableListItem
+                      key={bio.id}
+                      id={bio.id}
+                      bio={bio}
+                      onClick={() => {
+                        console.log("I am being called")
                         setDataToUpdate({
-                          id:bio.id,
-                          paragraph:bio.paragraph,
-                          memberId:bio.memberId,
-                          scriptId:bio.scriptId
+                          id: bio.id,
+                          paragraph: bio.paragraph,
+                          memberId: bio.memberId,
+                          scriptId: bio.scriptId,
+                          orderNumber: bio.orderNumber,
                         });
-                        setOpen(true);
-                      }}>
-                        <ListItemText>{bio.paragraph}</ListItemText>
-                      </ListItemButton>
-                    );
-                  })}
-              </List>
+                        setOpen((prev) => !prev);
+                      }}
+                    />
+                  ))}
+                </List>
+              </SortableContext>
             </Box>
-            <Dialog
-              maxWidth="md"
-              fullWidth
-              open={open}
-              onClose={handleClose}
-              slotProps={{
-                paper: {
-                  component: "form",
-                  onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
-                    event.preventDefault();
-                    const formData = new FormData(event.currentTarget);
-                    const formJson = Object.fromEntries(
-                      (formData as any).entries()
-                    );
-                    const email = formJson.email;
-                    console.log(email);
-                    handleClose();
-                  },
-                },
-              }}
-            >
-              <DialogTitle>Izmeni</DialogTitle>
-              <DialogContent>
-                <TextField
-                  required
-                  margin="normal"
-                  id="paragraph"
-                  name="paragraph"
-                  label="Paragraf"
-                  type="text"
-                  fullWidth
-                  multiline={true}
-                  variant="outlined"
-                  value={dataToUpdate.paragraph}
-                />
-              </DialogContent>
-              <DialogActions>
-                <Button onClick={handleClose}>Otkaži</Button>
-                <Button type="submit">Sačuvaj</Button>
-              </DialogActions>
-            </Dialog>
           </React.Fragment>
         );
       })}
-    </>
+
+      <Dialog
+        maxWidth="md"
+        fullWidth
+        open={open}
+        onClose={handleClose}
+        slotProps={{
+          paper: {
+            component: "form",
+            onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
+              event.preventDefault();
+              const formData = new FormData(event.currentTarget);
+              const formJson = Object.fromEntries((formData as any).entries());
+              const email = formJson.email;
+              console.log(email);
+              handleClose();
+            },
+          },
+        }}
+      >
+        <DialogTitle>Izmeni</DialogTitle>
+        <DialogContent>
+          <TextField
+            required
+            margin="normal"
+            id="paragraph"
+            name="paragraph"
+            label="Paragraf"
+            type="text"
+            fullWidth
+            multiline={true}
+            variant="outlined"
+            value={dataToUpdate.paragraph}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Otkaži</Button>
+          <Button type="submit">Sačuvaj</Button>
+        </DialogActions>
+      </Dialog>
+    </DndContext>
+  );
+}
+
+function DraggableListItem({
+  id,
+  bio,
+  onClick,
+}: {
+  id: number;
+  bio: biographyProps;
+  onClick: MouseEventHandler<HTMLDivElement>;
+}) {
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({ id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  return (
+    <ListItemButton
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      onClick={onClick}
+    >
+      <ListItemText >{bio.paragraph}</ListItemText>
+      <div {...listeners} style={{ cursor: "grab" }}>☰</div>
+    </ListItemButton>
   );
 }
