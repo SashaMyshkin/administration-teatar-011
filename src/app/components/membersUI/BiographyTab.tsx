@@ -220,7 +220,8 @@ export default function BiographyTab({
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Otkaži</Button>
-          <Button type="submit">Sačuvaj</Button>
+          <Button type="button" color="error">Obriši</Button>
+          <Button type="button" color="success">Sačuvaj</Button>
         </DialogActions>
       </Dialog>
     </DndContext>
