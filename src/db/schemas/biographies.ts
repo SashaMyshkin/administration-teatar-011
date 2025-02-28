@@ -5,7 +5,7 @@ export const biographies = mysqlTable("biographies", {
   memberId: int("memberId").notNull(),
   paragraph: text("paragraph").notNull(),
   scriptId: int("scriptId").notNull(),
-  orderNumber: int("scriptId").notNull()
+  orderNumber: int("orderNumber").notNull()
 });
 
 export type biographyProps = typeof biographies.$inferSelect;

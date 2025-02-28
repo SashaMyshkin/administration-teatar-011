@@ -21,12 +21,40 @@ export async function POST(request: Request) {
     }
 
     const formData = await request.json();
+    const memberId = Number(formData.memberId);
+    const scriptId = Number(formData.scriptId);
+    const paragraph = String(formData.paragraph).trim();
+    const orderNumber = Number(formData.orderNumber);
+
+    if(Number.isNaN(memberId)){
+      communication.success = false;
+      communication.message = "Member ID je parametar sa nevalidnom vrednošću.";
+      return Response.json(communication, { status: 400 });
+    }
+
+    if(Number.isNaN(scriptId)){
+      communication.success = false;
+      communication.message = "Script ID je parametar sa nevalidnom vrednošću.";
+      return Response.json(communication, { status: 400 });
+    }
+
+    if(paragraph === ""){
+      communication.success = false;
+      communication.message = "Ne može se uneti prazan paragraf.";
+      return Response.json(communication, { status: 400 });
+    }
+
+    if(Number.isNaN(orderNumber)){
+      communication.success = false;
+      communication.message = "orderNumber je parametar sa nevalidnom vrednošću.";
+      return Response.json(communication, { status: 400 });
+    }
 
     const newBiography = await db.insert(biographies).values({
-      memberId: formData.memberId,
-      scriptId: formData.scriptId,
-      paragraph: formData.paragraph,
-      orderNumber: formData.paragraph
+      memberId: memberId,
+      scriptId: scriptId,
+      paragraph: paragraph,
+      orderNumber: orderNumber
     });
 
     communication.success = true;
@@ -37,6 +65,7 @@ export async function POST(request: Request) {
   } catch (err) {
     communication.success = false;
     communication.message = "Desila se kritična greška";
+    console.log(err)
     return Response.json(communication, { status: 500 });
   }
 }
