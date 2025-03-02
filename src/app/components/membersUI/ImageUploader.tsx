@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useRef } from "react";
 import Cropper, { Area } from "react-easy-crop";
-import { Button, Slider, Box, Typography } from "@mui/material";
+import { Button, Slider, Box, Typography, TextField } from "@mui/material";
 import { getCroppedImg } from "@lib/image";
 import Grid from "@mui/material/Grid2";
 
@@ -51,9 +51,8 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
         type: "image/jpeg",
       });
 
-      setFile(croppedFile); 
+      setFile(croppedFile);
       setCroppedImage(croppedFile);
-  
       
       if (fileInputRef.current) {
         const input = fileInputRef.current;
@@ -61,14 +60,15 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
         const dataTransfer = new DataTransfer();
         dataTransfer.items.add(croppedFile);
         input.files = dataTransfer.files;
-  
+
         // Trigger the onChange event (so React knows about the change)
         const changeEvent = new Event("change", { bubbles: true });
         input.dispatchEvent(changeEvent);
+        
       }
+      setZoom(1);
     }
   };
-  
 
   const handleUpload = async () => {
     if (!croppedImage) return;
@@ -120,7 +120,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
   return (
     <>
       <Grid container spacing={2}>
-        <Grid size={6}>
+        <Grid size={4} order={2}>
           <Box>
             <Box
               sx={{
@@ -200,7 +200,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
             )}
           </Box>
         </Grid>
-        <Grid size={6}>
+        <Grid size={4} order={3}>
           <Box
             sx={{
               display: "flex",
@@ -235,6 +235,51 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
               />
             </Box>
           </Box>
+        </Grid>
+        <Grid size={4} component="form" sx={{display:"flex", flexDirection:"column", gap:"1rem"}} order={1}>
+          <TextField
+            fullWidth
+            id="standard-basic"
+            label="Alt cirilica"
+            variant="standard"
+          />
+          <TextField
+            fullWidth
+            id="standard-basic"
+            label="Alt latinica"
+            variant="standard"
+          />
+          <TextField
+            fullWidth
+            id="standard-basic"
+            label="Alt engleski"
+            variant="standard"
+          />
+          <TextField
+            fullWidth
+            id="standard-basic"
+            label="Širina"
+            variant="standard"
+          />
+          <TextField
+            fullWidth
+            id="standard-basic"
+            label="Visina"
+            variant="standard"
+          />
+          <TextField
+            fullWidth
+            id="standard-basic"
+            label="Proporcije"
+            variant="standard"
+          />
+          <TextField
+            fullWidth
+            id="standard-basic"
+            label="Putanja"
+            variant="standard"
+          />
+          <Button type="button">Sačuvaj</Button>
         </Grid>
       </Grid>
     </>
