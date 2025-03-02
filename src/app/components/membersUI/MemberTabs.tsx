@@ -80,7 +80,7 @@ export default function MemberTabs({
           <Tab label={coreInfoHeader} {...a11yProps(0)} />
           <Tab label="Moto" {...a11yProps(1)} disabled={!coreInfo} />
           <Tab label="Biografija" {...a11yProps(2)} disabled={!coreInfo} />
-          <Tab label="Fotografija" {...a11yProps(3)} disabled={!coreInfo} />
+          <Tab label="Profilna" {...a11yProps(3)} disabled={!coreInfo} />
           <Tab
             label="Vidljivost na sajtu"
             {...a11yProps(4)}

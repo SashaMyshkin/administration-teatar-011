@@ -50,8 +50,6 @@ export default function CoreInfoTab({
     exitDate: coreInfo?.exitDate
       ? formatDate(coreInfo.exitDate, "dd. MM. yyyy")
       : "",
-    img: coreInfo?.img ? coreInfo.img : "/assets/img/ime-prezime/profilna.jpg",
-    alt: coreInfo?.alt,
     membershipStatus: coreInfo?.membershipStatus
       ? String(coreInfo.membershipStatus)
       : "1",
@@ -138,9 +136,6 @@ export default function CoreInfoTab({
               onChange={(e) =>
                 setData({
                   ...data,
-                  img: convertToBaldLatin(
-                    `/assets/img/${e.target.value}-${data.surname}/profilna.jpg`.toLowerCase()
-                  ),
                   identifier: convertToBaldLatin(
                     `${e.target.value}-${data.surname}`.toLowerCase()
                   ),
@@ -177,9 +172,6 @@ export default function CoreInfoTab({
               onChange={(e) =>
                 setData({
                   ...data,
-                  img: convertToBaldLatin(
-                    `/assets/img/${data.name}-${e.target.value}/profilna.jpg`.toLowerCase()
-                  ),
                   surname: e.target.value,
                   identifier: convertToBaldLatin(
                     `${data.name}-${e.target.value}`.toLowerCase()
@@ -339,42 +331,6 @@ export default function CoreInfoTab({
 
       <Box sx={{ flexGrow: 1 }}>
         <Grid container spacing={2}>
-          <Grid size={4}>
-            <TextField
-              fullWidth
-              required
-              id="alt"
-              name="alt"
-              label="Alternativni tekst"
-              value={data.alt}
-              variant="standard"
-              size="small"
-              placeholder=""
-              onChange={(e) => setData({ ...data, alt: e.target.value })}
-              title="Alternativni tekst se prikazuje u slučaju ako sajt ne može da prikaže sliku ili biva pročitan od strane softvera za slepe."
-              onBlur={validateField}
-              error={errors.alt?.error}
-              helperText={errors.alt?.message}
-            />
-          </Grid>
-          <Grid size={4}>
-            <TextField
-              fullWidth
-              id="img"
-              name="img"
-              label="Putanja do slike"
-              value={data.img}
-              variant="standard"
-              size="small"
-              placeholder=""
-              slotProps={{
-                input: {
-                  readOnly: true,
-                },
-              }}
-            />
-          </Grid>
-
           <Grid size={4}>
             <TextField
               fullWidth
