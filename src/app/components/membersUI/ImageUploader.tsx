@@ -53,7 +53,8 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
 
       setFile(croppedFile);
       setCroppedImage(croppedFile);
-      
+      setZoom(1);
+
       if (fileInputRef.current) {
         const input = fileInputRef.current;
 
@@ -64,9 +65,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
         // Trigger the onChange event (so React knows about the change)
         const changeEvent = new Event("change", { bubbles: true });
         input.dispatchEvent(changeEvent);
-        
       }
-      setZoom(1);
     }
   };
 
@@ -236,7 +235,12 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
             </Box>
           </Box>
         </Grid>
-        <Grid size={4} component="form" sx={{display:"flex", flexDirection:"column", gap:"1rem"}} order={1}>
+        <Grid
+          size={4}
+          component="form"
+          sx={{ display: "flex", flexDirection: "column", gap: "1rem" }}
+          order={1}
+        >
           <TextField
             fullWidth
             id="standard-basic"
