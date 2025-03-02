@@ -100,7 +100,7 @@ export default function MemberTabs({
         )}
       </CustomTabPanel>
       <CustomTabPanel value={value} index={3}>
-        <ImageUploader/>
+        <ImageUploader aspectRatio={5/7} destination={new URL("https://t.com")} src="https://teatar011.com//assets/img/let-iznad-kukavicjeg-gnezda/poster.png"/>
       </CustomTabPanel>
       <CustomTabPanel value={value} index={4}>
         Vidljivost na sajtu....
