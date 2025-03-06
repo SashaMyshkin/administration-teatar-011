@@ -119,7 +119,7 @@ export async function DELETE(
     if (!session) {
       communication.success = false;
       communication.message = "Nemate prava da pristupite ovoj ruti.";
-      return Response.json(communication, {
+      return NextResponse.json(communication, {
         status: 401,
         statusText: "Unauthorized request.",
       });
@@ -130,16 +130,16 @@ export async function DELETE(
     if (!Number.isInteger(imageId)) {
       communication.success = false;
       communication.message = "ID je parametar sa nevalidnom vrednošću.";
-      return Response.json(communication, { status: 400 });
+      return NextResponse.json(communication, { status: 400 });
     }
 
     const res = await db
       .delete(images)
-      .where(eq(images.id, images.id));
+      .where(eq(images.id, imageId));
 
     communication.success = true;
     communication.message = "Slika je uspešno obrisan.";
-    return Response.json(communication, { status: 200 });
+    return NextResponse.json(communication, { status: 200 });
   } catch (err) {
     communication.success = false;
     communication.message = "Došlo je do kritične greške.";
