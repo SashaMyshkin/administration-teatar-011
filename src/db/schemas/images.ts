@@ -20,7 +20,7 @@ export const images = mysqlTable("images", {
   visible: tinyint("visible"),
 });
 
-export type ImagesProps = typeof images.$inferSelect;
+export type ImageProps = typeof images.$inferSelect;
 
 /*export const membershipStatus = mysqlTable("membershipStatus", {
   id: int("id").unsigned().notNull().primaryKey().autoincrement(),
