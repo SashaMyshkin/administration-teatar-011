@@ -50,7 +50,7 @@ export async function GET(
 
 export async function PUT(
   request: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   const communication: Communication = {
     success: false,
@@ -67,8 +67,7 @@ export async function PUT(
       });
     }
 
-    const imageIdParam = (await params).id;
-    const imageId = parseInt(imageIdParam);
+    const imageId = parseInt(params.id);
 
     if (!imageId || isNaN(imageId)) {
       communication.success = false;
@@ -99,6 +98,49 @@ export async function PUT(
 
     return NextResponse.json(communication, { status: 200 });
   } catch (error) {
+    communication.success = false;
+    communication.message = "Došlo je do kritične greške.";
+    return NextResponse.json(communication, { status: 500 });
+  }
+}
+
+export async function DELETE(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
+  
+  const communication: Communication = {
+    success: false,
+    message: "",
+  };
+
+  try {
+    const session = await auth();
+    if (!session) {
+      communication.success = false;
+      communication.message = "Nemate prava da pristupite ovoj ruti.";
+      return Response.json(communication, {
+        status: 401,
+        statusText: "Unauthorized request.",
+      });
+    }
+
+    const imageId = parseInt(params.id); // Extract the paragraph ID from the URL
+
+    if (!Number.isInteger(imageId)) {
+      communication.success = false;
+      communication.message = "ID je parametar sa nevalidnom vrednošću.";
+      return Response.json(communication, { status: 400 });
+    }
+
+    const res = await db
+      .delete(images)
+      .where(eq(images.id, images.id));
+
+    communication.success = true;
+    communication.message = "Slika je uspešno obrisan.";
+    return Response.json(communication, { status: 200 });
+  } catch (err) {
     communication.success = false;
     communication.message = "Došlo je do kritične greške.";
     return NextResponse.json(communication, { status: 500 });
