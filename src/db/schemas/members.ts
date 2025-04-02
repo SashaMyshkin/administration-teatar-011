@@ -1,7 +1,7 @@
-import { mysqlTable, varchar, int, tinyint, date, serial } from "drizzle-orm/mysql-core";
-//import { sql } from "drizzle-orm";
 
-export const members = mysqlTable("members", {
+import { pgTable, serial, text, varchar,smallint, date } from "drizzle-orm/pg-core";
+
+export const members = pgTable("members", {
   id: serial('id').primaryKey(),
   name: varchar("name", { length: 20 }).notNull(),
   nameCyr: varchar("nameCyr", { length: 20 }),
@@ -11,19 +11,11 @@ export const members = mysqlTable("members", {
   dateOfBirth: date("dateOfBirth"),
   dateOfJoining: date("dateOfJoining"),
   exitDate: date("exitDate"),
-  imageId: int("imageId"),
+  imageId: smallint("imageId"),
   identifier: varchar("identifier", { length: 30 }).unique(),
-  membershipStatus: tinyint("membershipStatus").notNull(),
-  active: tinyint("active").notNull(),
+  membershipStatus: smallint("membershipStatus").notNull(),
+  active: smallint("active").notNull(),
 });
 
 export type MemberProps = typeof members.$inferSelect;
 
-/*export const membershipStatus = mysqlTable("membershipStatus", {
-  id: int("id").unsigned().notNull().primaryKey().autoincrement(),
-});
-
-// Foreign Key Constraint
-members.addForeignKey("membershipStatus", ["membershipStatus"], "membershipStatus", ["id"], {
-  onUpdate: "cascade",
-});*/
