@@ -100,14 +100,6 @@ export default function Menu({
     setOpen(false);
   };
 
-  async function handleSigningOut(){
-    const resp = await signOut({
-      redirect:false
-    });
-
-    router.push("/");
-    router.refresh();
-  }
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -169,7 +161,7 @@ export default function Menu({
             }
           })}
           <Divider></Divider>
-          <ListItemButton component="button" onClick={handleSigningOut} sx={{width:"100%", textAlign:"center"}}>
+          <ListItemButton component="button" sx={{width:"100%", textAlign:"center"}}>
             <ListItemText primary="Odjavi se" />
           </ListItemButton>
 
