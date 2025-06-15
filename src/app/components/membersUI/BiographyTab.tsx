@@ -1,6 +1,6 @@
 "use client";
 
-import { biographyProps } from "@/db/schemas/biographies";
+import { biographyProps } from "@/db/schemas/";
 import { scriptProps } from "@/db/schemas/scripts";
 import {
   Box,

@@ -1,7 +1,5 @@
 import { auth } from "@/auth";
 import db from "@/db";
-import { members } from "@/db/schemas/members";
-import { membershipStatus } from "@/db/schemas/membershipStatus";
 import { convertToDbDate } from "@/lib/validation";
 import { Communication } from "@/types/Communication";
 import { and, like, eq } from "drizzle-orm"; // Import filtering functions
@@ -11,7 +9,7 @@ const DEFAULT_OFFSET = 0;
 const DEFAULT_LIMIT = 10;
 
 export async function GET(request: Request) {
-  const session = await auth();
+  /*const session = await auth();
   if (!session) return Response.json([]);
 
   const url = new URL(request.url);
@@ -63,12 +61,12 @@ export async function GET(request: Request) {
     .limit(limit)
     .offset(offset).toSQL())*/
 
-  const count = await db.$count(members, conditions);
+  /*const count = await db.$count(members, conditions);*/
 
-  return Response.json({ resultSet, count });
+  return Response.json({  });
 }
 
-export async function POST(request: Request) {
+/*export async function POST(request: Request) {
   const communication: Communication = {
     success: false,
     message: "",
@@ -120,4 +118,4 @@ export async function POST(request: Request) {
     communication.message = "Desila se kritična greška";
     return Response.json(communication, { status: 500 });
   }
-}
+}*/

@@ -1,14 +1,14 @@
-import { defineConfig } from "drizzle-kit";
+import { defineConfig } from 'drizzle-kit';
 
 export default defineConfig({
-  out: "./drizzle",
-  schema: "./src/db/schemas",
-  dialect: "mysql",
+  out: './drizzle',
+  schema: './src/db/schema.ts',
+  dialect: 'postgresql',
   dbCredentials: {
-    host: process.env.DB_HOST!,
-    port: process.env.DB_PORT ? Number(process.env.DB_PORT)! : undefined,
-    database: process.env.DB_NAME!,
-    user: process.env.DB_USER!,
-    password: process.env.DB_PASS,
+    url: "postgres://postgres.rscztbtvdxlukflnjbmh:wc8VnWZf4DlASvI0@aws-0-eu-central-1.pooler.supabase.com:5432/postgres?sslmode=require",
   },
+  introspect:{
+    casing: 'preserve'
+  }
+  
 });
